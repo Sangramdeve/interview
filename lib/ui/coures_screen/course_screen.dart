@@ -33,7 +33,6 @@ final ApiRepositories apiRepositories = ApiRepositories();
                     ),
                     title: Text(course.courseName),
                     subtitle: Text('Duration: ${course.courseDuration} days, Fee: ${course.courseFee}'),
-                    trailing: Text(course.oneDayCourse == "yes" ? "One Day" : "Multiple Days"),
                     onTap: () {
                       // Optionally handle tap on each course
                     },

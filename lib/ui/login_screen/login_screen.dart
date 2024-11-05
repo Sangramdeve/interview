@@ -71,6 +71,12 @@ class LoginScreen extends StatelessWidget {
                   Navigator.pushNamed(context, routeName.signupScreen);
                 },
                 child: const Text('Create a new account'),
+              ),
+              ElevatedButton(
+                onPressed: () async{
+                  Navigator.pushNamed(context, routeName.courseScreen);
+                },
+                child: const Text('jump to List Screen'),
               )
             ],
           )),
