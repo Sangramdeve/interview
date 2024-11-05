@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login/ui/widgets/form_field.dart';
 
@@ -23,6 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final ApiRepositories apiRepositories = ApiRepositories();
   final ImagePicker picker = ImagePicker();
   File? image;
+  File? imageTemp;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void submitForm() async{
@@ -41,6 +43,21 @@ class _SignupScreenState extends State<SignupScreen> {
       print("Form is invalid. Please correct the errors.");
     }
   }
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        imageTemp = File(image.path);
+        setState(() {
+          debugPrint('$imageTemp');
+        });
+      }
+    } on PlatformException catch (e) {
+      debugPrint('Failed to pick image: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +83,20 @@ class _SignupScreenState extends State<SignupScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32.0),
+                Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageTemp != null
+                          ? FileImage(imageTemp!)
+                          : AssetImage('assets/placeholder.png'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12.0),
                 TextFieldWidget(
                   nameController: nameController,
                   hintTextMessage: 'Full Name',
@@ -128,13 +159,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 32.0),
                 ElevatedButton(
                   onPressed: () async {
-                    final pickedFile =
-                    await picker.pickImage(source: ImageSource.gallery);
-                    if (pickedFile != null) {
-                      setState(() {
-                        image = File(pickedFile.path);
-                      });
-                    }
+                    setState(() {
+                      pickImage();
+                    });
                   },
                   child: const Text('Pick Image'),
                 ),
