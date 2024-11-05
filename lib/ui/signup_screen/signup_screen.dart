@@ -45,22 +45,30 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registration form'),
-      ),
       body: SafeArea(
-        top: true,
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Form(
-              key: formKey,
-                child: Column(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 32.0),
+                const Text(
+                  'Create Your Account',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8.0),
+                const Text(
+                  'Please fill in the details below',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32.0),
                 TextFieldWidget(
                   nameController: nameController,
-                  hintTextMessage: 'Full name',
+                  hintTextMessage: 'Full Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Full name is required';
@@ -98,6 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextFieldWidget(
                   nameController: passwordController,
                   hintTextMessage: 'Password',
+
                   validator: (value) {
                     if (value == null || value.length < 6) {
                       return 'Password must be at least 6 characters long';
@@ -116,29 +125,33 @@ class _SignupScreenState extends State<SignupScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 32.0),
                 ElevatedButton(
                   onPressed: () async {
                     final pickedFile =
-                        await picker.pickImage(source: ImageSource.gallery);
+                    await picker.pickImage(source: ImageSource.gallery);
                     if (pickedFile != null) {
                       setState(() {
                         image = File(pickedFile.path);
                       });
                     }
                   },
-                  child: Text('Pick Image'),
+                  child: const Text('Pick Image'),
                 ),
+                const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
                     submitForm();
                   },
                   child: const Text('Register'),
-                )
+                ),
+                const SizedBox(height: 32.0),
               ],
-            )),
+            ),
           ),
         ),
       ),
     );
   }
+
 }

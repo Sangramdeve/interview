@@ -33,9 +33,6 @@ final ApiRepositories apiRepositories = ApiRepositories();
                     ),
                     title: Text(course.courseName),
                     subtitle: Text('Duration: ${course.courseDuration} days, Fee: ${course.courseFee}'),
-                    onTap: () {
-                      // Optionally handle tap on each course
-                    },
                   );
                 },
               );
