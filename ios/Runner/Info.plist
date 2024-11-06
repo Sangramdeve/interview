@@ -51,6 +51,9 @@
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app needs access to your photo library to select photos.</string>
 
+    <key>NSAllowsArbitraryLoadsInWebContent</key>
+    <true/>
+
 
 </dict>
 </plist>

@@ -25,11 +25,19 @@ final ApiRepositories apiRepositories = ApiRepositories();
                 itemBuilder: (context,index){
                   final course = courses[index];
                   return ListTile(
-                    leading: Image.network(
+                    leading:  Image.network(
                       course.uploadPhoto,
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/placeholder.png',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                     title: Text(course.courseName),
                     subtitle: Text('Duration: ${course.courseDuration} days, Fee: ${course.courseFee}'),
