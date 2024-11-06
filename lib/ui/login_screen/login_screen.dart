@@ -1,30 +1,77 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:login/repositories/api_repositories.dart';
 import 'package:login/ui/widgets/form_field.dart';
 
+import '../../core/constants/json_data.dart';
 import '../../route/routes_name.dart';
-import '../widgets/custom_button.dart';
 
-class LoginScreen extends StatelessWidget {
+
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final ApiRepositories apiRepositories = ApiRepositories();
+  late Map<String, dynamic> valuesMap;
+
+  void covertJson() {
+    final Map<String, dynamic> data = json.decode(jsonData);
+    final item = data['item'].firstWhere(
+      (element) => element['name'] == 'Login',
+      orElse: () => null,
+    );
+
+    if (item != null) {
+      final authData = item['request']['body'];
+      final formData = authData['formdata'];
+
+      valuesMap = {for (var field in formData) field['key']: field['value']};
+      print('${valuesMap['user_name']},${valuesMap['password']}');
+    } else {
+      print('Item with name "Login" not found');
+    }
+  }
 
   void submitForm() async {
-    if (formKey.currentState!.validate()) {
-      // Form is valid, proceed with submission
+    final username = emailController.text;
+    final password = passwordController.text;
+    if (username == valuesMap['user_name'] &&
+        password == valuesMap['password']) {
+      // Login successful
+      Navigator.pushNamed(context, routeName.courseScreen);
+      print("Login Successful!");
+    } else {
+      // Login failed
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid username or password")),
+      );
+    }
+    /*if (formKey.currentState!.validate()) {
+
       Map<String, dynamic> credentials = {
         'email': emailController.text,
         'password': passwordController.text,
       };
       final responce = await apiRepositories.loginUser(credentials);
-      print(responce);
+       print(responce);
     } else {
       print("Form is invalid. Please correct the errors.");
-    }
+    }*/
+  }
+
+  @override
+  void initState() {
+    covertJson();
+    super.initState();
   }
 
   @override
@@ -75,14 +122,6 @@ class LoginScreen extends StatelessWidget {
                   TextFieldWidget(
                     nameController: passwordController,
                     hintTextMessage: 'Password',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      } else if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
@@ -99,12 +138,6 @@ class LoginScreen extends StatelessWidget {
                     child: const Text('Create a new account'),
                   ),
                   const Divider(height: 32.0),
-                  CustomButtons(
-                    text: 'Jump to List Screen',
-                    onTap: () {
-                      Navigator.pushNamed(context, routeName.courseScreen);
-                    },
-                  ),
                 ],
               ),
             ),
@@ -113,5 +146,4 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-
 }
